@@ -1,0 +1,55 @@
+@keyframes pulse {
+	from {
+		opacity: 0.2;
+		scale: 0.7;
+	}
+	to {
+		opacity: 0.6;
+		scale: 1;
+	}
+}
+
+:root {
+	--grid-width: 3;
+	--current-player-marker: "X";
+}
+
+body {
+	margin: 20px;
+}
+
+main {
+	width: 50vw;
+	display: grid;
+	aspect-ratio: 1;
+	grid-template-columns: repeat(var(--grid-width), 1fr);
+	grid-auto-rows: 1fr;
+	gap: 2px;
+	background-color: black;
+	outline: 2px solid black;
+	resize: horizontal;
+	overflow: auto;
+
+	> div {
+		background-color: white;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 3rem;
+
+		&:not([data-contains]) {
+			cursor: pointer;
+		}
+
+		&:hover {
+			/* outline: 5px dashed red;
+			outline-offset: -5px; */
+
+			&:not([data-contains])::after {
+				content: var(--current-player-marker);
+				opacity: 0.5;
+				animation: pulse 1s infinite alternate-reverse linear;
+			}
+		}
+	}
+}

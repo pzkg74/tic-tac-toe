@@ -1,8 +1,15 @@
 const Gameboard = (() => {
-	const rows = 3;
+	let rows = 3;
 	// must be square board
 	let board = [];
 	let markersPlaced = 0;
+
+	const setGridRows = (userRows) => {
+		rows = userRows;
+		document.documentElement.style.setProperty("--grid-width", userRows);
+		Gameboard.resetBoard();
+		console.log({ rows });
+	};
 
 	const createBoard = () => {
 		for (let i = 0; i < rows; i++) {
@@ -21,6 +28,7 @@ const Gameboard = (() => {
 		board = [];
 		markersPlaced = 0;
 		createBoard();
+		Display.drawGrid();
 	};
 
 	const getRow = (rowIndex) => board[rowIndex];
@@ -46,6 +54,7 @@ const Gameboard = (() => {
 	};
 
 	const printBoard = () => {
+		console.clear();
 		console.table(board);
 	};
 
@@ -116,12 +125,14 @@ const Gameboard = (() => {
 	return {
 		printBoard,
 		placeMarker,
+		getBoard,
 		getRow,
 		getColumn,
 		getLeadDiagonal,
 		getReverseDiagonal,
 		checkForWin,
 		resetBoard,
+		setGridRows,
 	};
 })();
 
@@ -130,14 +141,24 @@ const Game = (() => {
 	const player2 = { marker: "O", score: 0 };
 
 	let currentPlayer = player1;
+	let isGameOver = false;
 
 	const getCurrentPlayer = () => currentPlayer;
 
 	const swapCurrentPlayer = () => {
 		currentPlayer = currentPlayer === player1 ? player2 : player1;
+		document.documentElement.style.setProperty(
+			"--current-player-marker",
+			`"${currentPlayer.marker}"`,
+		);
 	};
 
 	const playTurn = (playRow, playColumn) => {
+		if (isGameOver) {
+			console.log("Game is over.");
+			return false;
+		}
+
 		Gameboard.placeMarker(currentPlayer.marker, playRow, playColumn);
 		Gameboard.printBoard();
 
@@ -160,10 +181,52 @@ const Game = (() => {
 			}
 
 			console.log(`Player 1: ${player1.score} | Player 2: ${player2.score}`);
-			Gameboard.resetBoard();
+			isGameOver = true;
+			// Gameboard.resetBoard();
 		}
 		swapCurrentPlayer();
 	};
 
-	return { playTurn };
+	return { playTurn, getCurrentPlayer };
 })();
+
+const Display = (() => {
+	const drawGrid = () => {
+		const mainContainer = document.querySelector("main");
+		mainContainer.innerHTML = "";
+		const board = Gameboard.getBoard();
+		for (let i = 0; i < board.length; i++) {
+			for (let j = 0; j < board.length; j++) {
+				const cell = document.createElement("div");
+				cell.dataset.rowIndex = i;
+				cell.dataset.columnIndex = j;
+				const currentCell = board[i][j];
+				if (currentCell !== "") {
+					cell.dataset.contains = currentCell;
+					cell.textContent = currentCell;
+				}
+
+				cell.addEventListener("click", (event) => {
+					if (!cell.dataset.contains) {
+						const playerMarker = Game.getCurrentPlayer().marker;
+						if (
+							Game.playTurn(
+								event.target.dataset.rowIndex,
+								event.target.dataset.columnIndex,
+							) !== false
+						) {
+							cell.dataset.contains = playerMarker;
+							cell.textContent = playerMarker;
+						}
+					}
+				});
+
+				mainContainer.append(cell);
+			}
+		}
+	};
+
+	return { drawGrid };
+})();
+
+Display.drawGrid();
