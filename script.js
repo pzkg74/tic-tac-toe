@@ -78,19 +78,17 @@ const Gameboard = (() => {
 
 		// Rows
 		for (let i = 0; i < rows; i++) {
-			gameWin.marker = arrayWin(board[i]);
-			if (gameWin.marker !== null) {
-				gameWin.info = { type: "row", index: i };
-				return gameWin;
+			const rowWin = arrayWin(board[i]);
+			if (rowWin !== null) {
+				return { marker: rowWin, info: { type: "row", index: i } };
 			}
 		}
 
 		// Columns
 		for (let i = 0; i < rows; i++) {
-			gameWin.marker = arrayWin(getColumn(i));
-			if (gameWin.marker !== null) {
-				gameWin.info = { type: "column", index: i };
-				return gameWin;
+			const colWin = arrayWin(getColumn(i));
+			if (colWin !== null) {
+				return { marker: colWin, info: { type: "column", index: i } };
 			}
 		}
 
