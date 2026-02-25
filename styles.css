@@ -28,6 +28,12 @@
 
 body {
 	margin: 20px;
+	font-family: sans-serif;
+}
+
+[data-highlight="true"] {
+	color: white;
+	animation: background-rainbow 2s infinite alternate-reverse linear;
 }
 
 main {
@@ -49,25 +55,51 @@ main {
 		align-items: center;
 		font-size: 3rem;
 
-		&:not([data-contains]) {
+		main:not([data-is-game-over="true"]) &:not([data-contains]) {
 			cursor: pointer;
 		}
 
-		&[data-highlight] {
-			background-color: orange;
-			color: white;
-			animation: background-rainbow 1s infinite alternate-reverse linear;
-		}
-
-		&:hover {
+		main:not([data-is-game-over="true"]) &:hover {
 			/* outline: 5px dashed red;
 			outline-offset: -5px; */
 
 			&:not([data-contains])::after {
+				font-size: 100%;
+				pointer-events: none;
+				cursor: default;
 				content: var(--current-player-marker);
 				opacity: 0.5;
 				animation: pulse 1s infinite alternate-reverse linear;
 			}
 		}
+	}
+}
+
+.scoreboard {
+	display: grid;
+	grid-template-columns: repeat(2, auto);
+	background-color: grey;
+	border: solid 2px grey;
+	margin-top: 20px;
+	margin-left: -2px;
+	max-width: 30vw;
+	gap: 2px;
+
+	> p {
+		background-color: white;
+		margin: 0;
+		padding: 10px;
+	}
+}
+
+#new-round {
+	padding: 20px 30px;
+	margin-left: -2px;
+	margin-top: 20px;
+	font-size: 1.3rem;
+	cursor: pointer;
+
+	&[disabled] {
+		cursor: not-allowed;
 	}
 }

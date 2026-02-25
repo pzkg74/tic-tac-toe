@@ -25,6 +25,11 @@ const Gameboard = (() => {
 	const getBoard = () => board;
 
 	const resetBoard = () => {
+		Game.setGameOver(false);
+		document
+			.querySelector("p[data-highlight]")
+			.setAttribute("data-highlight", false);
+		document.querySelector("main").dataset.isGameOver = false;
 		board = [];
 		markersPlaced = 0;
 		createBoard();
@@ -145,6 +150,15 @@ const Game = (() => {
 
 	const getCurrentPlayer = () => currentPlayer;
 
+	const setGameOver = (value) => {
+		isGameOver = value;
+		if (isGameOver) {
+			document.getElementById("new-round").disabled = false;
+		} else {
+			document.getElementById("new-round").disabled = true;
+		}
+	};
+
 	const swapCurrentPlayer = () => {
 		currentPlayer = currentPlayer === player1 ? player2 : player1;
 		document.documentElement.style.setProperty(
@@ -167,11 +181,15 @@ const Game = (() => {
 			switch (winInfo.marker) {
 				case player1.marker:
 					player1.score++;
+					document.getElementById("player1-score").textContent = player1.score;
+					document.getElementById("player1-score").dataset.highlight = true;
 					console.log(`Player 1 (${winInfo.marker}) wins!`);
 					Display.highlightWin(winInfo.info);
 					break;
 				case player2.marker:
 					player2.score++;
+					document.getElementById("player2-score").textContent = player2.score;
+					document.getElementById("player2-score").dataset.highlight = true;
 					console.log(`Player 2 (${winInfo.marker}) wins!`);
 					Display.highlightWin(winInfo.info);
 					break;
@@ -182,12 +200,14 @@ const Game = (() => {
 
 			console.log(`Player 1: ${player1.score} | Player 2: ${player2.score}`);
 			isGameOver = true;
+			document.querySelector("main").dataset.isGameOver = isGameOver;
+			document.getElementById("new-round").disabled = false;
 			// Gameboard.resetBoard();
 		}
 		swapCurrentPlayer();
 	};
 
-	return { playTurn, getCurrentPlayer };
+	return { playTurn, getCurrentPlayer, setGameOver };
 })();
 
 const Display = (() => {
@@ -251,7 +271,6 @@ const Display = (() => {
 				break;
 			case "leadDiagonal": {
 				const boardWidth = Gameboard.getBoard().length;
-				console.log(boardWidth);
 
 				for (let i = 0; i < boardWidth; i++) {
 					toHighlight.push(
@@ -267,12 +286,11 @@ const Display = (() => {
 			}
 			case "reverseDiagonal": {
 				const boardWidth = Gameboard.getBoard().length;
-				console.log(boardWidth);
 
 				for (let i = 0; i < boardWidth; i++) {
 					toHighlight.push(
 						document.querySelector(
-							`div[data-row-index="${i}"][data-column-index="${2 - i}"]`,
+							`div[data-row-index="${i}"][data-column-index="${boardWidth - 1 - i}"]`,
 						),
 					);
 				}
@@ -288,3 +306,7 @@ const Display = (() => {
 })();
 
 Display.drawGrid();
+
+document.getElementById("new-round").addEventListener("click", () => {
+	Gameboard.resetBoard();
+});
