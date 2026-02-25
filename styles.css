@@ -9,6 +9,18 @@
 	}
 }
 
+@keyframes background-rainbow {
+	0% {
+		background-color: red;
+	}
+	50% {
+		background-color: blue;
+	}
+	100% {
+		background-color: yellow;
+	}
+}
+
 :root {
 	--grid-width: 3;
 	--current-player-marker: "X";
@@ -39,6 +51,12 @@ main {
 
 		&:not([data-contains]) {
 			cursor: pointer;
+		}
+
+		&[data-highlight] {
+			background-color: orange;
+			color: white;
+			animation: background-rainbow 1s infinite alternate-reverse linear;
 		}
 
 		&:hover {

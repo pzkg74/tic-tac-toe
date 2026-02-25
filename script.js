@@ -168,12 +168,12 @@ const Game = (() => {
 				case player1.marker:
 					player1.score++;
 					console.log(`Player 1 (${winInfo.marker}) wins!`);
-					console.log(winInfo.info);
+					Display.highlightWin(winInfo.info);
 					break;
 				case player2.marker:
 					player2.score++;
 					console.log(`Player 2 (${winInfo.marker}) wins!`);
-					console.log(winInfo.info);
+					Display.highlightWin(winInfo.info);
 					break;
 				case "Tie":
 					console.log("Tie! No one wins");
@@ -226,7 +226,65 @@ const Display = (() => {
 		}
 	};
 
-	return { drawGrid };
+	const highlightWin = (winInformation) => {
+		let toHighlight = [];
+		switch (winInformation.type) {
+			case "row":
+				toHighlight = [
+					...document.querySelectorAll(
+						`div[data-row-index="${winInformation.index}"]`,
+					),
+				];
+				toHighlight.forEach((div) => {
+					div.dataset.highlight = true;
+				});
+				break;
+			case "column":
+				toHighlight = [
+					...document.querySelectorAll(
+						`div[data-column-index="${winInformation.index}"]`,
+					),
+				];
+				toHighlight.forEach((div) => {
+					div.dataset.highlight = true;
+				});
+				break;
+			case "leadDiagonal": {
+				const boardWidth = Gameboard.getBoard().length;
+				console.log(boardWidth);
+
+				for (let i = 0; i < boardWidth; i++) {
+					toHighlight.push(
+						document.querySelector(
+							`div[data-row-index="${i}"][data-column-index="${i}"]`,
+						),
+					);
+				}
+				toHighlight.forEach((div) => {
+					div.dataset.highlight = true;
+				});
+				break;
+			}
+			case "reverseDiagonal": {
+				const boardWidth = Gameboard.getBoard().length;
+				console.log(boardWidth);
+
+				for (let i = 0; i < boardWidth; i++) {
+					toHighlight.push(
+						document.querySelector(
+							`div[data-row-index="${i}"][data-column-index="${2 - i}"]`,
+						),
+					);
+				}
+				toHighlight.forEach((div) => {
+					div.dataset.highlight = true;
+				});
+				break;
+			}
+		}
+	};
+
+	return { drawGrid, highlightWin };
 })();
 
 Display.drawGrid();
