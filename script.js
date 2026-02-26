@@ -340,6 +340,22 @@ document.getElementById("grid-width").addEventListener("input", (event) => {
 	}
 });
 
+document.getElementById("increment").addEventListener("click", () => {
+	if (document.querySelector("input").value < 16) {
+		++document.querySelector("input").value;
+		Gameboard.setGridRows(document.querySelector("input").value);
+		Gameboard.resetBoard();
+	}
+});
+
+document.getElementById("decrement").addEventListener("click", () => {
+	if (document.querySelector("input").value > 1) {
+		--document.querySelector("input").value;
+		Gameboard.setGridRows(document.querySelector("input").value);
+		Gameboard.resetBoard();
+	}
+});
+
 document.querySelector("form").addEventListener("submit", (event) => {
 	event.preventDefault();
 });

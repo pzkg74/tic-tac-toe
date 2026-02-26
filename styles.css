@@ -122,4 +122,8 @@ form {
 		width: max-content;
 		font-size: 1rem;
 	}
+
+	button {
+		padding: 3px 15px;
+	}
 }
