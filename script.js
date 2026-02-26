@@ -339,3 +339,7 @@ document.getElementById("grid-width").addEventListener("input", (event) => {
 		Gameboard.resetBoard();
 	}
 });
+
+document.querySelector("form").addEventListener("submit", (event) => {
+	event.preventDefault();
+});
