@@ -7,8 +7,6 @@ const Gameboard = (() => {
 	const setGridRows = (userRows) => {
 		rows = userRows;
 		document.documentElement.style.setProperty("--grid-width", userRows);
-		Gameboard.resetBoard();
-		console.log({ rows });
 	};
 
 	const createBoard = () => {
@@ -26,10 +24,13 @@ const Gameboard = (() => {
 
 	const resetBoard = () => {
 		Game.setGameOver(false);
-		document
-			.querySelector('p[data-highlight="true"]')
-			.setAttribute("data-highlight", false);
+		try {
+			document
+				.querySelector('p[data-highlight="true"]')
+				.setAttribute("data-highlight", false);
+		} catch {}
 		document.querySelector("main").dataset.isGameOver = false;
+
 		board = [];
 		markersPlaced = 0;
 		createBoard();
@@ -150,6 +151,8 @@ const Game = (() => {
 
 	const getCurrentPlayer = () => currentPlayer;
 
+	// const resetCurrentPlayer = ()
+
 	const setGameOver = (value) => {
 		isGameOver = value;
 		if (isGameOver) {
@@ -224,8 +227,15 @@ const Display = (() => {
 	const drawGrid = () => {
 		const mainContainer = document.querySelector("main");
 		mainContainer.innerHTML = "";
-		document.getElementById("current-player-hint").textContent =
-			"Player 1's turn (X)";
+
+		if (Game.getCurrentPlayer().marker === "X") {
+			document.getElementById("current-player-hint").textContent =
+				"Player 1's turn (X)";
+		} else {
+			document.getElementById("current-player-hint").textContent =
+				"Player 2's turn (O)";
+		}
+
 		const board = Gameboard.getBoard();
 		for (let i = 0; i < board.length; i++) {
 			for (let j = 0; j < board.length; j++) {
@@ -235,7 +245,7 @@ const Display = (() => {
 				const currentCell = board[i][j];
 				if (currentCell !== "") {
 					cell.dataset.contains = currentCell;
-					cell.textContent = currentCell;
+					cell.innerHTML = `<span>${currentCell}</span>`;
 				}
 
 				cell.addEventListener("click", (event) => {
@@ -248,7 +258,7 @@ const Display = (() => {
 							) !== false
 						) {
 							cell.dataset.contains = playerMarker;
-							cell.textContent = playerMarker;
+							cell.innerHTML = `<span>${playerMarker}</span>`;
 						}
 					}
 				});
@@ -321,4 +331,11 @@ Display.drawGrid();
 
 document.getElementById("new-round").addEventListener("click", () => {
 	Gameboard.resetBoard();
+});
+
+document.getElementById("grid-width").addEventListener("input", (event) => {
+	if (event.target.value >= 1 && event.target.value <= 16) {
+		Gameboard.setGridRows(event.target.value);
+		Gameboard.resetBoard();
+	}
 });
