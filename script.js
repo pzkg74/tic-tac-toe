@@ -27,7 +27,7 @@ const Gameboard = (() => {
 	const resetBoard = () => {
 		Game.setGameOver(false);
 		document
-			.querySelector("p[data-highlight]")
+			.querySelector('p[data-highlight="true"]')
 			.setAttribute("data-highlight", false);
 		document.querySelector("main").dataset.isGameOver = false;
 		board = [];
@@ -153,6 +153,7 @@ const Game = (() => {
 	const setGameOver = (value) => {
 		isGameOver = value;
 		if (isGameOver) {
+			document.getElementById("current-player-hint").textContent = "​"; // hacky way to stop layout shifting
 			document.getElementById("new-round").disabled = false;
 		} else {
 			document.getElementById("new-round").disabled = true;
@@ -165,6 +166,15 @@ const Game = (() => {
 			"--current-player-marker",
 			`"${currentPlayer.marker}"`,
 		);
+		if (!isGameOver) {
+			if (currentPlayer.marker === "X") {
+				document.getElementById("current-player-hint").textContent =
+					`Player 1's turn (${currentPlayer.marker})`;
+			} else {
+				document.getElementById("current-player-hint").textContent =
+					`Player 2's turn (${currentPlayer.marker})`;
+			}
+		}
 	};
 
 	const playTurn = (playRow, playColumn) => {
@@ -199,9 +209,9 @@ const Game = (() => {
 			}
 
 			console.log(`Player 1: ${player1.score} | Player 2: ${player2.score}`);
-			isGameOver = true;
+			setGameOver(true);
 			document.querySelector("main").dataset.isGameOver = isGameOver;
-			document.getElementById("new-round").disabled = false;
+
 			// Gameboard.resetBoard();
 		}
 		swapCurrentPlayer();
@@ -214,6 +224,8 @@ const Display = (() => {
 	const drawGrid = () => {
 		const mainContainer = document.querySelector("main");
 		mainContainer.innerHTML = "";
+		document.getElementById("current-player-hint").textContent =
+			"Player 1's turn (X)";
 		const board = Gameboard.getBoard();
 		for (let i = 0; i < board.length; i++) {
 			for (let j = 0; j < board.length; j++) {

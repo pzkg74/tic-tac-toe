@@ -27,7 +27,9 @@
 }
 
 body {
-	margin: 20px;
+	max-width: 400px;
+	margin: 50px auto;
+	padding: 0 20px;
 	font-family: sans-serif;
 }
 
@@ -37,7 +39,6 @@ body {
 }
 
 main {
-	width: 50vw;
 	display: grid;
 	aspect-ratio: 1;
 	grid-template-columns: repeat(var(--grid-width), 1fr);
@@ -82,7 +83,6 @@ main {
 	border: solid 2px grey;
 	margin-top: 20px;
 	margin-left: -2px;
-	max-width: 30vw;
 	gap: 2px;
 
 	> p {
@@ -98,6 +98,7 @@ main {
 	margin-top: 20px;
 	font-size: 1.3rem;
 	cursor: pointer;
+	width: 100%;
 
 	&[disabled] {
 		cursor: not-allowed;
